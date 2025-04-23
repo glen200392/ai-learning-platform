@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI學習平台</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <div id="welcome-screen" class="screen active">
+            <h1>歡迎來到AI學習之旅</h1>
+            <p>讓我們通過有趣的方式了解您的學習需求</p>
+            <button id="start-assessment" class="btn-primary">開始評估</button>
+        </div>
+
+        <div id="character-creation" class="screen">
+            <h2>創建您的學習角色</h2>
+            <div class="character-form">
+                <div class="avatar-selection">
+                    <h3>選擇您的虛擬形象</h3>
+                    <div class="avatar-grid">
+                        <div class="avatar" data-avatar="1">探索</div>
+                        <div class="avatar" data-avatar="2">創新</div>
+                        <div class="avatar" data-avatar="3">專注</div>
+                        <div class="avatar" data-avatar="4">合作</div>
+                    </div>
+                </div>
+                <div class="character-info">
+                    <div class="form-group">
+                        <label for="nickname">您的暱稱</label>
+                        <input type="text" id="nickname" name="nickname" required>
+                    </div>
+                    <div class="form-group">
+                        <label>選擇您的興趣領域（可多選）</label>
+                        <div class="interest-tags">
+                            <label class="tag">
+                                <input type="checkbox" name="interests" value="machinelearning">
+                                機器學習
+                            </label>
+                            <label class="tag">
+                                <input type="checkbox" name="interests" value="nlp">
+                                自然語言處理
+                            </label>
+                            <label class="tag">
+                                <input type="checkbox" name="interests" value="computer-vision">
+                                電腦視覺
+                            </label>
+                            <label class="tag">
+                                <input type="checkbox" name="interests" value="robotics">
+                                機器人技術
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button id="create-character" class="btn-primary">創建角色</button>
+            </div>
+        </div>
+
+        <div id="assessment-questions" class="screen">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <div class="question-container">
+                <!-- Questions will be dynamically inserted here -->
+            </div>
+            <div class="navigation-buttons">
+                <button id="prev-question" class="btn-secondary">上一題</button>
+                <button id="next-question" class="btn-primary">下一題</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="screen">
+            <h2>您的AI學習檔案</h2>
+            <div class="results-container">
+                <div class="character-profile">
+                    <div id="profile-avatar"></div>
+                    <h3 id="profile-nickname"></h3>
+                </div>
+                <div class="learning-stats">
+                    <h3>學習特質分析</h3>
+                    <div id="stats-container"></div>
+                </div>
+                <div class="recommended-path">
+                    <h3>推薦學習路徑</h3>
+                    <div id="path-container"></div>
+                </div>
+            </div>
+            <button id="start-learning" class="btn-primary">開始學習之旅</button>
+        </div>
+    </div>
+    <!-- Core Services -->
+    <script src="js/core/platform.js"></script>
+    <script src="js/core/learning-analytics.js"></script>
+    <script src="js/core/ai-service.js"></script>
+    
+    <!-- Features -->
+    <script src="js/features/assessment.js"></script>
+</body>
+</html>
