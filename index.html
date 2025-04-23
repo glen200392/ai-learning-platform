@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI學習平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js/styles/github.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js"></script>
+</head>
+<body>
+    <div class="platform-container">
+        <nav class="main-nav">
+            <div class="nav-profile">
+                <div id="user-avatar" class="avatar"></div>
+                <span id="user-nickname"></span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#dashboard" class="active">個人儀表板</a></li>
+                <li><a href="#courses">AI 課程</a></li>
+                <li><a href="#learning-path">學習路徑</a></li>
+                <li><a href="#practice">實戰練習</a></li>
+                <li><a href="#community">學習社群</a></li>
+                <li><a href="#analytics">學習分析</a></li>
+            </ul>
+            <div class="nav-progress">
+                <div class="progress-title">學習進度</div>
+                <div class="progress-bar">
+                    <div class="progress" id="overall-progress"></div>
+                </div>
+                <div class="progress-stats">
+                    <span id="completed-courses">0</span> 課程完成
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <section id="dashboard" class="section active">
+                <h1>個人儀表板</h1>
+                <div class="dashboard-grid">
+                    <div class="card current-learning">
+                        <h2>當前學習</h2>
+                        <div id="current-course">
+                            <!-- Current course content -->
+                        </div>
+                    </div>
+                    <div class="card learning-stats">
+                        <h2>學習統計</h2>
+                        <div id="learning-stats">
+                            <!-- Learning statistics -->
+                        </div>
+                    </div>
+                    <div class="card recommended">
+                        <h2>推薦內容</h2>
+                        <div id="recommendations">
+                            <!-- Recommended content -->
+                        </div>
+                    </div>
+                    <div class="card upcoming">
+                        <h2>即將到來</h2>
+                        <div id="upcoming-content">
+                            <!-- Upcoming content -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="courses" class="section">
+                <h1>AI 課程</h1>
+                <div class="courses-filter">
+                    <button class="filter active" data-level="all">全部</button>
+                    <button class="filter" data-level="beginner">入門</button>
+                    <button class="filter" data-level="intermediate">進階</button>
+                    <button class="filter" data-level="advanced">高階</button>
+                </div>
+                <div class="courses-grid" id="courses-container">
+                    <!-- Course cards will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <section id="learning-path" class="section">
+                <h1>個人化學習路徑</h1>
+                <div class="learning-path-container">
+                    <div class="path-visualization" id="path-visualization">
+                        <!-- Path visualization will be rendered here -->
+                    </div>
+                    <div class="current-milestone">
+                        <h2>當前里程碑</h2>
+                        <div id="current-milestone">
+                            <!-- Current milestone info -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="practice" class="section">
+                <h1>實戰練習</h1>
+                <div class="practice-grid">
+                    <div class="exercises">
+                        <h2>練習題</h2>
+                        <div id="exercises-list">
+                            <!-- Exercises will be listed here -->
+                        </div>
+                    </div>
+                    <div class="projects">
+                        <h2>專案實作</h2>
+                        <div id="projects-list">
+                            <!-- Projects will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="community" class="section">
+                <h1>學習社群</h1>
+                <div class="community-grid">
+                    <div class="study-groups">
+                        <h2>學習小組</h2>
+                        <div id="study-groups-list">
+                            <!-- Study groups will be listed here -->
+                        </div>
+                    </div>
+                    <div class="discussions">
+                        <h2>討論區</h2>
+                        <div id="discussions-list">
+                            <!-- Discussions will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="analytics" class="section">
+                <h1>學習分析</h1>
+                <div class="analytics-grid">
+                    <div class="chart-container">
+                        <canvas id="learning-progress-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="skills-radar-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="time-distribution-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="prediction-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <aside class="learning-assistant">
+            <div class="assistant-header">
+                <h3>AI 學習助手</h3>
+            </div>
+            <div class="assistant-content">
+                <div class="chat-container" id="assistant-chat">
+                    <!-- Chat messages will be displayed here -->
+                </div>
+                <div class="input-container">
+                    <input type="text" id="assistant-input" placeholder="請輸入您的問題...">
+                    <button id="send-message" class="send-button">
+                        <span class="button-text">發送</span>
+                        <span class="loading-spinner" style="display: none;"></span>
+                    </button>
+                </div>
+                <div class="error-container" id="error-message" style="display: none;">
+                    <!-- Error messages will be displayed here -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Core Platform JavaScript -->
+    <script src="js/platform.js"></script>
+    
+    <!-- Knowledge Base -->
+    <script src="js/knowledge-base.js"></script>
+    
+    <!-- Content Management -->
+    <script src="js/content-manager.js"></script>
+    
+    <!-- Analytics System -->
+    <script src="js/analytics.js"></script>
+    
+    <!-- Predictive Model -->
+    <script src="js/predictive-model.js"></script>
+    
+    <!-- Visualizations -->
+    <script src="js/visualizations.js"></script>
+    
+    <!-- AI Service -->
+    <script src="js/ai-service.js"></script>
+
+    <!-- Markdown configuration -->
+    <script>
+        marked.setOptions({
+            highlight: function(code, language) {
+                const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+                return hljs.highlight(validLanguage, code).value;
+            },
+            gfm: true,
+            breaks: true,
+            sanitize: false,
+            smartLists: true,
+            smartypants: true
+        });
+    </script>
+
+    <script>
+        // 檢查並處理從評估系統來的數據
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                const data = JSON.parse(userData);
+                // 初始化AI服務
+                if (window.aiService) {
+                    window.aiService.initializeUserProfile(data);
+                }
+                // 顯示歡迎信息
+                const assistantChat = document.getElementById('assistant-chat');
+                if (assistantChat) {
+                    const welcomeMessage = {
+                        type: 'assistant',
+                        content: `歡迎回來，${data.nickname}！我是您的AI學習助手。讓我們開始今天的學習之旅吧！`,
+                        suggestions: [
+                            '查看學習進度',
+                            '繼續上次課程',
+                            '探索新內容'
+                        ]
+                    };
+                    displayMessage(welcomeMessage);
+                }
+            }
+        });
+
+        // 處理消息顯示
+        function displayMessage(message) {
+            const chatContainer = document.getElementById('assistant-chat');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.type}`;
+
+            // 根據消息類型處理內容
+            let contentHtml = '';
+            if (message.type === 'error') {
+                contentHtml = `<div class="error-content">${message.content}</div>`;
+            } else {
+                // 使用marked處理Markdown內容
+                contentHtml = `<div class="message-content">${marked(message.content)}</div>`;
+            }
+
+            // 添加建議按鈕
+            if (message.suggestions && message.suggestions.length > 0) {
+                contentHtml += `
+                    <div class="suggestions">
+                        ${message.suggestions.map(suggestion =>
+                            `<button class="suggestion-btn">${suggestion}</button>`
+                        ).join('')}
+                    </div>
+                `;
+            }
+
+            messageDiv.innerHTML = contentHtml;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // 為新添加的建議按鈕添加事件監聽器
+            messageDiv.querySelectorAll('.suggestion-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('assistant-input').value = btn.textContent;
+                    document.getElementById('send-message').click();
+                });
+            });
+        }
+
+        // 顯示錯誤消息
+        function displayError(error) {
+            const errorContainer = document.getElementById('error-message');
+            errorContainer.textContent = error.message || '發生錯誤，請稍後再試。';
+            errorContainer.style.display = 'block';
+            setTimeout(() => {
+                errorContainer.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
