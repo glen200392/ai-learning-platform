@@ -128,7 +128,7 @@ class LearningPlatform {
             this.userData = JSON.parse(savedData);
             this.updateUserProfile();
         } else {
-            window.location.href = '/assessment';
+            window.location.href = '/ai-learning-platform';
         }
     }
 
