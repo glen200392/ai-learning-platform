@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學習需求評估 - AI學習平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/ai-learning-platform/css/style.css">
+    <link rel="stylesheet" href="/ai-learning-platform/css/assessment.css">
+</head>
+<body>
+    <div class="app-container">
+        <div id="assessment-container" class="screen active">
+            <h1>開始您的AI學習之旅</h1>
+            <p class="intro-text">讓我們通過簡單的評估來了解您的學習需求和目標</p>
+            
+            <div id="registration-form" class="form-section">
+                <h2>基本資料</h2>
+                <div class="form-group">
+                    <label for="nickname">暱稱</label>
+                    <input type="text" id="nickname" required placeholder="請輸入您想使用的暱稱">
+                </div>
+                
+                <div class="form-group">
+                    <label>選擇您的學習風格</label>
+                    <div class="avatar-grid">
+                        <div class="avatar" data-avatar="1" title="探索型 - 喜歡嘗試新事物">探索</div>
+                        <div class="avatar" data-avatar="2" title="創新型 - 善於發想創意">創新</div>
+                        <div class="avatar" data-avatar="3" title="專注型 - 深入學習">專注</div>
+                        <div class="avatar" data-avatar="4" title="合作型 - 樂於分享交流">合作</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="interests-section" class="form-section">
+                <h2>學習興趣</h2>
+                <div class="interest-tags">
+                    <label class="tag">
+                        <input type="checkbox" name="interests" value="smart-life">
+                        <div class="tag-content">
+                            <i class="fas fa-home"></i>
+                            <span class="tag-title">智慧生活助手</span>
+                            <span class="tag-desc">讓AI幫你管理家居、行程和日常事務</span>
+                        </div>
+                    </label>
+                    <label class="tag">
+                        <input type="checkbox" name="interests" value="creative">
+                        <div class="tag-content">
+                            <i class="fas fa-paint-brush"></i>
+                            <span class="tag-title">AI創意與娛樂</span>
+                            <span class="tag-desc">探索AI繪圖、音樂創作和遊戲互動</span>
+                        </div>
+                    </label>
+                    <label class="tag">
+                        <input type="checkbox" name="interests" value="work">
+                        <div class="tag-content">
+                            <i class="fas fa-briefcase"></i>
+                            <span class="tag-title">工作效率提升</span>
+                            <span class="tag-desc">運用AI協助寫作、編程和學習</span>
+                        </div>
+                    </label>
+                    <label class="tag">
+                        <input type="checkbox" name="interests" value="social">
+                        <div class="tag-content">
+                            <i class="fas fa-comments"></i>
+                            <span class="tag-title">智慧社交互動</span>
+                            <span class="tag-desc">體驗AI翻譯、對話和情緒分析</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="start-journey" class="btn-primary">開始學習之旅</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const avatars = document.querySelectorAll('.avatar');
+            const startButton = document.getElementById('start-journey');
+            const nicknameInput = document.getElementById('nickname');
+            let selectedAvatar = null;
+
+            // Avatar selection
+            avatars.forEach(avatar => {
+                avatar.addEventListener('click', () => {
+                    avatars.forEach(a => a.classList.remove('selected'));
+                    avatar.classList.add('selected');
+                    selectedAvatar = avatar.dataset.avatar;
+                });
+            });
+
+            // Form submission
+            startButton.addEventListener('click', () => {
+                const nickname = nicknameInput.value.trim();
+                const interests = Array.from(document.querySelectorAll('input[name="interests"]:checked'))
+                    .map(cb => cb.value);
+                
+                if (!nickname) {
+                    alert('請輸入暱稱');
+                    return;
+                }
+                if (!selectedAvatar) {
+                    alert('請選擇您的學習風格');
+                    return;
+                }
+                if (interests.length === 0) {
+                    alert('請至少選擇一個興趣領域');
+                    return;
+                }
+
+                // Save user data
+                const userData = {
+                    nickname,
+                    avatar: selectedAvatar,
+                    interests,
+                    createdAt: new Date().toISOString(),
+                    activities: []
+                };
+
+                localStorage.setItem('userData', JSON.stringify(userData));
+                window.location.href = '/ai-learning-platform/';
+            });
+        });
+    </script>
+</body>
+</html>
