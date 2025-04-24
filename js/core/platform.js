@@ -76,14 +76,50 @@ class LearningPlatform {
     }
 
     async init() {
+        const loading = document.getElementById('loading');
         try {
+            // 顯示載入指示器
+            loading.style.display = 'flex';
+            
+            // 檢查並載入資源
+            await this.checkResources();
             await this.loadUserData();
             this.initializeServices();
             this.initializeEventListeners();
-            this.loadDashboard();
+            await this.loadDashboard();
+
+            // 隱藏載入指示器
+            loading.style.display = 'none';
         } catch (error) {
             console.error('平台初始化失敗:', error);
+            loading.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>載入失敗，請稍後重試</p>
+                    <button onclick="window.location.reload()" class="btn-primary">重新載入</button>
+                </div>
+            `;
         }
+    }
+
+    async checkResources() {
+        const resources = [
+            '/ai-learning-platform/css/style.css',
+            '/ai-learning-platform/css/practice-exercises.css',
+            '/ai-learning-platform/js/core/platform.js',
+            '/ai-learning-platform/js/core/learning-analytics.js',
+            '/ai-learning-platform/js/core/ai-service.js',
+            '/ai-learning-platform/js/core/practice-manager.js',
+            '/ai-learning-platform/js/features/assessment.js',
+            '/ai-learning-platform/js/features/practice-exercises.js'
+        ];
+
+        await Promise.all(resources.map(async (resource) => {
+            const response = await fetch(resource);
+            if (!response.ok) {
+                throw new Error(`Failed to load ${resource}`);
+            }
+        }));
     }
 
     async loadUserData() {
