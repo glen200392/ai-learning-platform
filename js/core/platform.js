@@ -183,10 +183,19 @@ class LearningPlatform {
         const avatar = document.getElementById('user-avatar');
         const nickname = document.getElementById('user-nickname');
         
-        if (this.userData) {
-            avatar.textContent = this.userData.avatarText;
+        if (this.userData && avatar && nickname) {
+            // 添加用戶標記到body
+            document.body.classList.add('has-user');
+            
+            // 更新頭像
+            avatar.textContent = this.userData.nickname.charAt(0).toUpperCase();
             avatar.style.backgroundColor = this.getAvatarColor(this.userData.avatar);
+            
+            // 更新暱稱
             nickname.textContent = this.userData.nickname;
+        } else {
+            // 移除用戶標記
+            document.body.classList.remove('has-user');
         }
     }
 
