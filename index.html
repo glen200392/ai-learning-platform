@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI學習平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/practice-exercises.css">
 </head>
 <body>
     <div class="app-container">
@@ -35,20 +37,36 @@
                         <label>選擇您的興趣領域（可多選）</label>
                         <div class="interest-tags">
                             <label class="tag">
-                                <input type="checkbox" name="interests" value="machinelearning">
-                                機器學習
+                                <input type="checkbox" name="interests" value="smart-life">
+                                <div class="tag-content">
+                                    <i class="fas fa-home"></i>
+                                    <span class="tag-title">智慧生活助手</span>
+                                    <span class="tag-desc">讓AI幫你管理家居、行程和日常事務</span>
+                                </div>
                             </label>
                             <label class="tag">
-                                <input type="checkbox" name="interests" value="nlp">
-                                自然語言處理
+                                <input type="checkbox" name="interests" value="creative">
+                                <div class="tag-content">
+                                    <i class="fas fa-paint-brush"></i>
+                                    <span class="tag-title">AI創意與娛樂</span>
+                                    <span class="tag-desc">探索AI繪圖、音樂創作和遊戲互動</span>
+                                </div>
                             </label>
                             <label class="tag">
-                                <input type="checkbox" name="interests" value="computer-vision">
-                                電腦視覺
+                                <input type="checkbox" name="interests" value="work">
+                                <div class="tag-content">
+                                    <i class="fas fa-briefcase"></i>
+                                    <span class="tag-title">工作效率提升</span>
+                                    <span class="tag-desc">運用AI協助寫作、編程和學習</span>
+                                </div>
                             </label>
                             <label class="tag">
-                                <input type="checkbox" name="interests" value="robotics">
-                                機器人技術
+                                <input type="checkbox" name="interests" value="social">
+                                <div class="tag-content">
+                                    <i class="fas fa-comments"></i>
+                                    <span class="tag-title">智慧社交互動</span>
+                                    <span class="tag-desc">體驗AI翻譯、對話和情緒分析</span>
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -88,13 +106,28 @@
             </div>
             <button id="start-learning" class="btn-primary">開始學習之旅</button>
         </div>
+
+        <div id="practice-screen" class="screen">
+            <h2>AI實戰練習</h2>
+            <div class="practice-stats">
+                <!-- Practice statistics will be shown here -->
+            </div>
+            <div class="practice-container">
+                <!-- Practice exercises will be loaded here -->
+            </div>
+            <div class="exercise-details">
+                <!-- Exercise details will be shown here -->
+            </div>
+        </div>
     </div>
     <!-- Core Services -->
     <script src="js/core/platform.js"></script>
     <script src="js/core/learning-analytics.js"></script>
     <script src="js/core/ai-service.js"></script>
+    <script src="js/core/practice-manager.js"></script>
     
     <!-- Features -->
     <script src="js/features/assessment.js"></script>
+    <script src="js/features/practice-exercises.js"></script>
 </body>
 </html>

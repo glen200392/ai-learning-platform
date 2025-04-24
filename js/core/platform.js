@@ -4,49 +4,72 @@ class LearningPlatform {
         this.userData = null;
         this.analytics = null;
         this.aiService = null;
+        this.practiceManager = null;
 
         // 課程數據
         this.courseData = {
-            foundation: [
+            'smart-life': [
                 {
-                    id: 'ai-basics',
-                    title: 'AI基礎概念',
-                    modules: ['AI發展歷史', '機器學習基礎', '深度學習入門'],
-                    duration: '4週'
+                    id: 'home-assistant',
+                    title: '打造個人智慧助手',
+                    modules: ['智慧家居入門', 'AI日程管理', '生活自動化'],
+                    duration: '4週',
+                    description: '學習如何讓AI協助管理日常生活，提升生活品質'
                 },
                 {
-                    id: 'data-basics',
-                    title: '數據科學基礎',
-                    modules: ['數據分析基礎', '統計學概論', 'Python程式設計'],
-                    duration: '6週'
+                    id: 'life-automation',
+                    title: '生活自動化實戰',
+                    modules: ['智慧提醒系統', '個人資訊整理', '智慧家居連動'],
+                    duration: '6週',
+                    description: '實作各種自動化腳本，打造個人化智慧生活圈'
                 }
             ],
-            applications: [
+            'creative': [
                 {
-                    id: 'nlp-basic',
-                    title: '自然語言處理應用',
-                    modules: ['文字處理基礎', '情感分析', '聊天機器人開發'],
-                    duration: '8週'
+                    id: 'ai-art',
+                    title: 'AI藝術創作',
+                    modules: ['AI繪圖基礎', '提示詞設計', '風格轉換'],
+                    duration: '6週',
+                    description: '探索AI藝術創作的無限可能'
                 },
                 {
-                    id: 'cv-basic',
-                    title: '電腦視覺應用',
-                    modules: ['圖像處理基礎', '物件偵測', '人臉辨識'],
-                    duration: '8週'
+                    id: 'ai-music',
+                    title: 'AI音樂製作',
+                    modules: ['音樂生成基礎', '曲風混合', '配樂創作'],
+                    duration: '8週',
+                    description: '學習使用AI協助音樂創作和編曲'
                 }
             ],
-            advanced: [
+            'work': [
                 {
-                    id: 'ai-architecture',
-                    title: 'AI系統架構',
-                    modules: ['模型部署', '系統整合', '效能優化'],
-                    duration: '10週'
+                    id: 'productivity',
+                    title: 'AI工作效率提升',
+                    modules: ['文件自動化', 'AI輔助寫作', '智能數據分析'],
+                    duration: '6週',
+                    description: '運用AI工具提升工作效率'
                 },
                 {
-                    id: 'ai-ethics',
-                    title: 'AI倫理與治理',
-                    modules: ['倫理準則', '隱私保護', '法規遵循'],
-                    duration: '6週'
+                    id: 'code-assistant',
+                    title: 'AI程式助手應用',
+                    modules: ['程式碼生成', 'AI除錯協助', '智能重構'],
+                    duration: '8週',
+                    description: '學習使用AI協助程式開發'
+                }
+            ],
+            'social': [
+                {
+                    id: 'chat-assistant',
+                    title: '智慧對話系統',
+                    modules: ['對話設計基礎', '情緒辨識應用', '多語言互動'],
+                    duration: '6週',
+                    description: '學習開發智能對話系統'
+                },
+                {
+                    id: 'social-analytics',
+                    title: '社群互動分析',
+                    modules: ['社群數據分析', '輿情監測', '互動優化'],
+                    duration: '8週',
+                    description: '運用AI分析和優化社群互動'
                 }
             ]
         };
@@ -79,6 +102,9 @@ class LearningPlatform {
         
         // 初始化AI助手服務
         this.aiService = new AIService(this.userData);
+
+        // 初始化練習管理器
+        this.practiceManager = new PracticeManager(this);
     }
 
     updateUserProfile() {
@@ -171,6 +197,9 @@ class LearningPlatform {
                     break;
                 case 'analytics':
                     await this.loadAnalytics();
+                    break;
+                case 'practice':
+                    await this.loadPractice();
                     break;
             }
         } catch (error) {
@@ -360,9 +389,10 @@ class LearningPlatform {
 
     formatCategoryTitle(category) {
         const titles = {
-            'foundation': '基礎課程',
-            'applications': '應用課程',
-            'advanced': '進階課程'
+            'smart-life': '智慧生活助手',
+            'creative': 'AI創意與娛樂',
+            'work': '工作效率提升',
+            'social': '智慧社交互動'
         };
         return titles[category] || category;
     }
@@ -496,6 +526,38 @@ class LearningPlatform {
                 tags: ['電腦視覺', '深度學習', 'Python']
             }
         ];
+    }
+
+    async loadPractice() {
+        if (!this.practiceManager) {
+            this.practiceManager = new PracticeManager(this);
+        }
+
+        // 初始化練習區域
+        document.getElementById('practice-screen').classList.add('active');
+        
+        // 初始化練習管理器
+        await this.practiceManager.initialize();
+
+        // 載入用戶進度
+        if (this.userData) {
+            const progress = await this.practiceManager.practiceExercises.getProgress(this.userData.id);
+            
+            // 更新進度顯示
+            const completedCount = progress.completed.length;
+            const inProgressCount = progress.inProgress.length;
+            
+            document.querySelector('.practice-stats').innerHTML = `
+                <div class="stats-item">
+                    <span class="stats-value">${completedCount}</span>
+                    <span class="stats-label">已完成練習</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-value">${inProgressCount}</span>
+                    <span class="stats-label">進行中</span>
+                </div>
+            `;
+        }
     }
 }
 

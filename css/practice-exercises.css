@@ -1,0 +1,281 @@
+/* 練習容器 */
+.exercise-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    margin: 20px 0;
+}
+
+.exercise-header {
+    margin-bottom: 24px;
+}
+
+.exercise-title {
+    font-size: 24px;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.exercise-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* 練習內容區域 */
+.exercise-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 1024px) {
+    .exercise-content {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* 理論部分 */
+.theory-section {
+    padding: 20px;
+    background: var(--background-light);
+    border-radius: 8px;
+}
+
+.question-container {
+    margin-bottom: 24px;
+}
+
+.question {
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+.options-list {
+    list-style: none;
+    padding: 0;
+}
+
+.option-item {
+    padding: 12px;
+    margin: 8px 0;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.option-item:hover {
+    background: var(--hover-color);
+}
+
+.option-item.selected {
+    border-color: var(--primary-color);
+    background: var(--primary-light);
+}
+
+/* 資源區域 */
+.resource-container {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+.resource-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin: 8px 0;
+    background: white;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.resource-item:hover {
+    background: var(--hover-color);
+}
+
+.resource-icon {
+    margin-right: 12px;
+    color: var(--primary-color);
+}
+
+.resource-info {
+    flex: 1;
+}
+
+.resource-title {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.resource-meta {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+/* 實踐部分 */
+.code-editor {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--background-dark);
+    color: white;
+}
+
+.editor-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.editor-content {
+    padding: 16px;
+    background: var(--code-background);
+}
+
+#code-input {
+    width: 100%;
+    min-height: 300px;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: var(--code-text);
+    resize: vertical;
+}
+
+.editor-output {
+    background: white;
+    border-top: 1px solid var(--border-color);
+}
+
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--background-light);
+}
+
+#code-output {
+    padding: 12px;
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+}
+
+/* 底部導航 */
+.exercise-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+.progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progress-bar {
+    width: 200px;
+    height: 8px;
+    background: var(--background-light);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.navigation-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+/* 按鈕樣式 */
+.btn-reset, .btn-run, .btn-clear {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-reset {
+    background: var(--warning-color);
+    color: white;
+}
+
+.btn-run {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-clear {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-previous, .btn-next {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-previous {
+    background: var(--background-light);
+    color: var(--text-color);
+}
+
+.btn-next {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-previous:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .exercise-container {
+        padding: 16px;
+    }
+
+    .exercise-content {
+        grid-template-columns: 1fr;
+    }
+
+    .progress-bar {
+        width: 120px;
+    }
+
+    .navigation-buttons {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,53 @@
+<div class="exercise-container">
+    <div class="exercise-header">
+        <h2 class="exercise-title"></h2>
+        <p class="exercise-description"></p>
+    </div>
+
+    <div class="exercise-content">
+        <!-- 練習內容區域 -->
+        <div class="theory-section">
+            <div class="question-container">
+                <!-- 問題將動態插入這裡 -->
+            </div>
+            <div class="resource-container">
+                <!-- 學習資源將動態插入這裡 -->
+            </div>
+        </div>
+
+        <div class="practical-section">
+            <div class="code-editor">
+                <div class="editor-header">
+                    <span class="editor-title">程式碼編輯器</span>
+                    <div class="editor-controls">
+                        <button class="btn-reset">重置</button>
+                        <button class="btn-run">運行</button>
+                    </div>
+                </div>
+                <div class="editor-content">
+                    <textarea id="code-input"></textarea>
+                </div>
+                <div class="editor-output">
+                    <div class="output-header">
+                        <span>執行結果</span>
+                        <button class="btn-clear">清除</button>
+                    </div>
+                    <div id="code-output"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="exercise-footer">
+        <div class="progress-indicator">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <span class="progress-text">0% 完成</span>
+        </div>
+        <div class="navigation-buttons">
+            <button class="btn-previous" disabled>上一個</button>
+            <button class="btn-next">下一個</button>
+        </div>
+    </div>
+</div>
