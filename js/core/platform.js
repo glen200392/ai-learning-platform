@@ -103,6 +103,7 @@ class LearningPlatform {
     }
 
     async checkResources() {
+        const TIMEOUT = 10000; // 10秒超時
         const resources = [
             '/ai-learning-platform/css/style.css',
             '/ai-learning-platform/css/practice-exercises.css',
@@ -114,21 +115,56 @@ class LearningPlatform {
             '/ai-learning-platform/js/features/practice-exercises.js'
         ];
 
-        await Promise.all(resources.map(async (resource) => {
-            const response = await fetch(resource);
-            if (!response.ok) {
-                throw new Error(`Failed to load ${resource}`);
+        const loadWithTimeout = async (resource) => {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+
+            try {
+                const response = await fetch(resource, {
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return true;
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    throw new Error(`載入超時: ${resource}`);
+                }
+                throw error;
             }
-        }));
+        };
+
+        try {
+            await Promise.all(resources.map(loadWithTimeout));
+        } catch (error) {
+            console.error('資源載入失敗:', error);
+            throw new Error(`資源載入失敗: ${error.message}`);
+        }
     }
 
     async loadUserData() {
+        // 檢查是否已在評估頁面
+        if (window.location.pathname.includes('/assessment')) {
+            return;
+        }
+
         const savedData = localStorage.getItem('userData');
+        const redirectCount = parseInt(sessionStorage.getItem('redirectCount') || '0');
+
         if (savedData) {
             this.userData = JSON.parse(savedData);
             this.updateUserProfile();
+            // 重置重定向計數
+            sessionStorage.removeItem('redirectCount');
+        } else if (redirectCount < 3) { // 防止無限重定向
+            sessionStorage.setItem('redirectCount', (redirectCount + 1).toString());
+            window.location.href = '/ai-learning-platform/assessment.html';
         } else {
-            window.location.href = '/ai-learning-platform';
+            console.error('重定向次數過多，可能存在配置問題');
+            throw new Error('無法載入用戶數據');
         }
     }
 
