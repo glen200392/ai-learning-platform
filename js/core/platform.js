@@ -92,11 +92,15 @@ class LearningPlatform {
             loading.style.display = 'none';
         } catch (error) {
             console.error('平台初始化失敗:', error);
+            const errorMessage = this.getErrorMessage(error);
             loading.innerHTML = `
                 <div class="error-message">
                     <i class="fas fa-exclamation-circle"></i>
-                    <p>載入失敗，請稍後重試</p>
-                    <button onclick="window.location.reload()" class="btn-primary">重新載入</button>
+                    <h3>載入失敗</h3>
+                    <p>${errorMessage.message}</p>
+                    <div class="error-actions">
+                        ${errorMessage.action}
+                    </div>
                 </div>
             `;
         }
@@ -207,6 +211,65 @@ class LearningPlatform {
             '4': '#ED8936'
         };
         return colors[avatarId] || '#4A90E2';
+    }
+
+    getErrorMessage(error) {
+        // 網絡相關錯誤
+        if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            return {
+                message: '無法連接到伺服器，請檢查您的網絡連接',
+                action: `
+                    <button onclick="window.location.reload()" class="btn-primary">重新連接</button>
+                    <p class="error-help">如果問題持續存在，請：</p>
+                    <ul>
+                        <li>檢查網絡連接</li>
+                        <li>確認是否開啟了VPN或代理</li>
+                        <li>稍後再試</li>
+                    </ul>
+                `
+            };
+        }
+
+        // 資源載入超時
+        if (error.message.includes('載入超時')) {
+            return {
+                message: '資源載入超時，可能是網絡較慢或伺服器忙碌',
+                action: `
+                    <button onclick="window.location.reload()" class="btn-primary">重新載入</button>
+                    <p class="error-help">建議：</p>
+                    <ul>
+                        <li>檢查網絡速度</li>
+                        <li>關閉其他佔用網絡的應用</li>
+                        <li>稍後再試</li>
+                    </ul>
+                `
+            };
+        }
+
+        // 用戶數據相關錯誤
+        if (error.message.includes('無法載入用戶數據')) {
+            return {
+                message: '無法載入或更新用戶資料',
+                action: `
+                    <button onclick="window.location.href='/ai-learning-platform/assessment.html'" class="btn-primary">重新開始</button>
+                    <p class="error-help">或者您可以：</p>
+                    <ul>
+                        <li>清除瀏覽器快取</li>
+                        <li>重新登入</li>
+                        <li>聯繫客服支援</li>
+                    </ul>
+                `
+            };
+        }
+
+        // 預設錯誤信息
+        return {
+            message: '發生未知錯誤，請稍後重試',
+            action: `
+                <button onclick="window.location.reload()" class="btn-primary">重新整理</button>
+                <p class="error-help">如果問題持續存在，請聯繫客服支援</p>
+            `
+        };
     }
 
     initializeEventListeners() {
