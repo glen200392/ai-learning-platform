@@ -142,14 +142,16 @@ class LearningPlatform {
     async checkResources() {
         const TIMEOUT = 10000; // 10秒超時
         const resources = [
-            '/ai-learning/css/style.css',
-            '/ai-learning/css/practice-exercises.css',
-            '/ai-learning/js/core/platform.js',
-            '/ai-learning/js/core/learning-analytics.js',
-            '/ai-learning/js/core/ai-service.js',
-            '/ai-learning/js/core/practice-manager.js',
-            '/ai-learning/js/features/assessment.js',
-            '/ai-learning/js/features/practice-exercises.js'
+            '/ai-learning-platform/css/style.css',
+            '/ai-learning-platform/css/practice-exercises.css',
+            '/ai-learning-platform/js/core/platform.js',
+            '/ai-learning-platform/js/core/learning-analytics.js',
+            '/ai-learning-platform/js/core/ai-service.js',
+            '/ai-learning-platform/js/core/practice-manager.js',
+            '/ai-learning-platform/js/features/assessment.js',
+            '/ai-learning-platform/js/features/practice-exercises.js',
+            '/ai-learning-platform/js/features/cognitive-map.js',
+            '/ai-learning-platform/css/cognitive-map.css'
         ];
 
         const loadWithTimeout = async (resource) => {
