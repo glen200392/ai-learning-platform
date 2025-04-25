@@ -8,12 +8,36 @@ class LearningPlatform {
         this.practiceManager = null;
         this.achievementService = null;
         this.codeReviewService = null;
+        this.cognitiveMap = null;
 
         // 代碼審查相關狀態
         this.currentReview = null;
 
         // 課程數據
         this.courseData = {
+            'cognitive-science': [
+                {
+                    id: 'brain-learning',
+                    title: '大腦學習機制',
+                    modules: ['認知負荷理論', '記憶與學習', '注意力機制'],
+                    duration: '3週',
+                    description: '了解大腦如何處理和學習新信息，為AI學習打下基礎'
+                },
+                {
+                    id: 'thinking-patterns',
+                    title: '思維模式與框架',
+                    modules: ['系統思維', '決策框架', '創造性思考'],
+                    duration: '4週',
+                    description: '建立結構化思維方式，提升解決問題的能力'
+                },
+                {
+                    id: 'ai-cognition',
+                    title: 'AI與人類認知',
+                    modules: ['認知科學基礎', 'AI運作原理', '人機協作模式'],
+                    duration: '4週',
+                    description: '理解AI與人類認知的關係，掌握協作要點'
+                }
+            ],
             'smart-life': [
                 {
                     id: 'home-assistant',
@@ -93,6 +117,9 @@ class LearningPlatform {
             this.initializeServices();
             this.initializeEventListeners();
             await this.loadDashboard();
+            
+            // 初始化認知地圖
+            this.initializeCognitiveMap();
 
             // 隱藏載入指示器
             loading.style.display = 'none';
@@ -181,6 +208,9 @@ class LearningPlatform {
     initializeServices() {
         // 初始化分析服務
         this.analytics = new LearningAnalytics(this.userData);
+        
+        // 初始化認知地圖
+        this.cognitiveMap = new CognitiveMap(this);
         
         // 初始化AI助手服務
         this.aiService = new AIService(this.userData);
@@ -662,6 +692,12 @@ class LearningPlatform {
             5: '困難'
         };
         return levels[difficulty] || difficulty;
+    }
+
+    initializeCognitiveMap() {
+        if (this.cognitiveMap && document.getElementById('cognitive-map-container')) {
+            this.cognitiveMap.initialize('cognitive-map-container');
+        }
     }
 
     async loadDashboard() {

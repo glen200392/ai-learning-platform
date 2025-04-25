@@ -1,0 +1,246 @@
+/* 認知地圖容器 */
+.cognitive-map-container {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+/* 地圖控制區 */
+.map-controls {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    display: flex;
+    gap: 20px;
+}
+
+.map-selector {
+    display: flex;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.map-selector button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background: #e9ecef;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.map-selector button.active {
+    background: #228be6;
+    color: white;
+}
+
+.view-controls {
+    display: flex;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.view-controls button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 4px;
+    background: #e9ecef;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-controls button:hover {
+    background: #dee2e6;
+}
+
+/* 概念地圖 */
+.concept-map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 概念節點 */
+.concept {
+    position: absolute;
+    width: 180px;
+    transition: all 0.3s ease;
+}
+
+.concept.core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+.concept-content {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.concept:not(.core) .concept-content {
+    transform: scale(0.9);
+}
+
+.concept.core .concept-content {
+    background: #228be6;
+    color: white;
+}
+
+.concept h3, .concept h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.concept p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.concept.core p {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* 概念連接線 */
+.connection {
+    position: absolute;
+    height: 2px;
+    background: #dee2e6;
+    transform-origin: 0 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.connection.active {
+    background: #228be6;
+    height: 3px;
+    box-shadow: 0 0 8px rgba(34, 139, 230, 0.4);
+}
+
+/* 互動效果 */
+.concept:hover .concept-content {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.concept.connected .concept-content {
+    border: 2px solid #228be6;
+}
+
+/* 概念詳情模態框 */
+.concept-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-content h2 {
+    color: #228be6;
+    margin: 0 0 20px 0;
+}
+
+.modal-content h3 {
+    color: #495057;
+    margin: 20px 0 10px 0;
+}
+
+.modal-content .description {
+    line-height: 1.6;
+    color: #495057;
+    margin-bottom: 20px;
+}
+
+.learning-resources ul,
+.practice-exercises ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.learning-resources li,
+.practice-exercises li {
+    margin: 10px 0;
+}
+
+.resource,
+.exercise {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    background: #f8f9fa;
+    color: #495057;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.resource:hover,
+.exercise:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.resource i,
+.exercise i {
+    color: #228be6;
+    font-size: 18px;
+}
+
+.close-modal {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 6px;
+    background: #228be6;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+    background: #1c7ed6;
+}

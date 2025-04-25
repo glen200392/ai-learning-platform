@@ -279,3 +279,280 @@
         flex-direction: column;
     }
 }
+
+/* 社群功能樣式 */
+.community-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 2px solid var(--border-color);
+}
+
+.community-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.community-stats {
+    display: flex;
+    gap: 24px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+}
+
+.stat-item i {
+    color: var(--primary-color);
+}
+
+.community-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .community-features {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 討論區樣式 */
+.discussion-panel {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.discussion-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 16px 0;
+}
+
+.discussion-item {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.discussion-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.discussion-content {
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.discussion-actions {
+    display: flex;
+    gap: 16px;
+}
+
+.discussion-actions button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.discussion-actions button:hover {
+    background: var(--hover-color);
+    color: var(--primary-color);
+}
+
+.discussion-input {
+    margin-top: 16px;
+}
+
+.discussion-input textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    resize: vertical;
+    margin-bottom: 12px;
+}
+
+/* 評審系統樣式 */
+.review-interface {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.code-metrics {
+    display: flex;
+    gap: 16px;
+    color: var(--text-secondary);
+}
+
+.code-display {
+    background: var(--code-background);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+}
+
+.code-display pre {
+    margin: 0;
+    font-family: 'Fira Code', monospace;
+}
+
+.review-form {
+    background: var(--background-light);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.rating-section {
+    margin-bottom: 24px;
+}
+
+.rating-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.rating-items label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rating-items input[type="range"] {
+    width: 100%;
+}
+
+.comment-section textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    resize: vertical;
+}
+
+.review-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* 消息提示樣式 */
+.message {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    color: white;
+    animation: slideIn 0.3s ease;
+    z-index: 1000;
+}
+
+.message.success {
+    background: var(--success-color);
+}
+
+.message.error {
+    background: var(--danger-color);
+}
+
+.message.info {
+    background: var(--primary-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 協作功能樣式 */
+.collaboration {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.online-users {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.collaboration-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.collaboration-actions button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-start-session {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-join-session {
+    background: var(--success-color);
+    color: white;
+}

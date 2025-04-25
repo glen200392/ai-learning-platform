@@ -4,8 +4,15 @@ class AIService {
         this.context = {
             lastQuery: null,
             conversationHistory: [],
-            currentTopic: null
+            currentTopic: null,
+            learningGoals: [],
+            learningStyle: null,
+            currentSkillLevel: null,
+            interests: [],
+            challenges: []
         };
+
+        this.initializeUserContext();
         
         // 預定義的回應模板
         this.responseTemplates = {
@@ -74,66 +81,59 @@ class AIService {
         });
     }
 
-    analyzeIntent(query) {
-        const intent = {
-            type: null,
-            topic: null,
-            keywords: []
-        };
+    async analyzeIntent(query) {
+        try {
+            // 使用更先進的NLP分析
+            const analysis = await this.performNLPAnalysis(query);
+            
+            const intent = {
+                type: analysis.intentType,
+                topic: analysis.topic,
+                keywords: analysis.keywords,
+                sentiment: analysis.sentiment,
+                complexity: analysis.complexity,
+                context: this.context
+            };
 
-        // 檢查每個關鍵字類別
-        for (const [type, keywords] of Object.entries(this.keywordMap)) {
-            if (keywords.some(keyword => query.includes(keyword))) {
-                intent.type = type;
-                intent.keywords.push(...keywords.filter(k => query.includes(k)));
-            }
+            // 更新學習上下文
+            this.updateLearningContext(intent);
+
+            return intent;
+        } catch (error) {
+            console.error('意圖分析失敗:', error);
+            return this.fallbackIntentAnalysis(query);
         }
-
-        // 如果沒有找到明確意圖，嘗試進行模糊匹配
-        if (!intent.type) {
-            intent.type = this.fuzzyMatch(query);
-        }
-
-        // 提取可能的主題
-        intent.topic = this.extractTopic(query);
-
-        return intent;
     }
 
     async generateResponse(query, intent) {
-        let response = {
-            content: '',
-            suggestions: []
-        };
-
-        // 根據意圖生成回應
-        switch (intent.type) {
-            case 'progress':
-                response = await this.generateProgressResponse();
-                break;
-            case 'course':
-                response = await this.generateCourseResponse(intent.topic);
-                break;
-            case 'project':
-                response = await this.generateProjectResponse();
-                break;
-            case 'difficulty':
-                response = await this.generateHelpResponse(query);
-                break;
-            case 'recommendation':
-                response = await this.generateRecommendationResponse();
-                break;
-            case 'review':
-                response = await this.generateReviewResponse(intent.topic);
-                break;
-            case 'schedule':
-                response = await this.generateScheduleResponse();
-                break;
-            default:
-                response = await this.generateDefaultResponse();
+        try {
+            // 分析學習情境
+            const learningContext = await this.analyzeLearningContext(intent);
+            
+            // 生成個性化回應
+            const response = await this.createPersonalizedResponse(query, intent, learningContext);
+            
+            // 添加適應性建議
+            const suggestions = await this.generateAdaptiveSuggestions(intent, learningContext);
+            
+            // 整合額外學習資源
+            const resources = await this.findRelevantResources(intent.topic, learningContext);
+            
+            // 組合完整回應
+            return {
+                content: response,
+                suggestions,
+                resources,
+                context: {
+                    skillLevel: learningContext.currentLevel,
+                    nextMilestone: learningContext.nextMilestone,
+                    recommendedPath: learningContext.recommendedPath
+                }
+            };
+        } catch (error) {
+            console.error('回應生成失敗:', error);
+            return this.getErrorResponse();
         }
-
-        return response;
     }
 
     async generateProgressResponse() {
@@ -256,18 +256,92 @@ class AIService {
         };
     }
 
-    // 輔助方法
-    fuzzyMatch(query) {
-        // 簡單的模糊匹配，可以根據需求擴充
-        if (query.length < 5) return 'greeting';
-        if (query.includes('?') || query.includes('？')) return 'help';
-        return 'default';
+    // 進階分析方法
+    async performNLPAnalysis(query) {
+        // 這裡將來可以接入更強大的NLP模型
+        const response = await fetch('/api/nlp/analyze', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                query,
+                context: this.context
+            })
+        });
+
+        return await response.json();
     }
 
-    extractTopic(query) {
-        // 從查詢中提取主題，可以根據需求擴充
-        const topics = ['AI', '機器學習', '深度學習', '神經網路', 'NLP', '電腦視覺'];
-        return topics.find(topic => query.includes(topic)) || null;
+    fallbackIntentAnalysis(query) {
+        // 備用的意圖分析邏輯
+        return {
+            type: this.basicIntentDetection(query),
+            topic: this.extractMainTopic(query),
+            keywords: this.extractKeywords(query),
+            sentiment: this.basicSentimentAnalysis(query),
+            complexity: 'medium',
+            context: this.context
+        };
+    }
+
+    initializeUserContext() {
+        if (this.userData) {
+            this.context.learningGoals = this.userData.goals || [];
+            this.context.learningStyle = this.userData.learningStyle || 'visual';
+            this.context.currentSkillLevel = this.userData.skillLevel || 'beginner';
+            this.context.interests = this.userData.interests || [];
+            this.context.challenges = [];
+        }
+    }
+
+    updateLearningContext(intent) {
+        // 根據用戶互動更新學習上下文
+        if (intent.sentiment) {
+            this.updateChallenges(intent);
+        }
+        if (intent.topic) {
+            this.updateInterests(intent.topic);
+        }
+        this.updateSkillLevel(intent);
+    }
+
+    basicIntentDetection(query) {
+        const patterns = {
+            help: /如何|怎麼|教學|幫助/,
+            learn: /學習|教材|課程|練習/,
+            problem: /問題|錯誤|不懂|困難/,
+            progress: /進度|完成|達成|改善/
+        };
+
+        for (const [intent, pattern] of Object.entries(patterns)) {
+            if (pattern.test(query)) return intent;
+        }
+        return 'general';
+    }
+
+    extractMainTopic(query) {
+        const topics = {
+            'AI基礎': /人工智慧|AI|基礎|入門/,
+            '機器學習': /機器學習|ML|算法|模型/,
+            '深度學習': /深度學習|DL|神經網路|CNN|RNN/,
+            'NLP': /自然語言|NLP|文本|語言處理/,
+            '電腦視覺': /視覺|CV|圖像|影像處理/
+        };
+
+        for (const [topic, pattern] of Object.entries(topics)) {
+            if (pattern.test(query)) return topic;
+        }
+        return null;
+    }
+
+    basicSentimentAnalysis(query) {
+        const positivePatterns = /好|棒|讚|有趣|明白|懂/;
+        const negativePatterns = /難|不懂|困難|問題|錯誤/;
+
+        if (positivePatterns.test(query)) return 'positive';
+        if (negativePatterns.test(query)) return 'negative';
+        return 'neutral';
     }
 
     getRandomTemplate(type) {
@@ -389,6 +463,168 @@ class AIService {
                 activity: '參與討論會'
             }
         ];
+    }
+
+    async analyzeLearningContext(intent) {
+        const userProgress = await this.getUserProgress();
+        const learningHistory = await this.getLearningHistory();
+        const currentChallenges = await this.getCurrentChallenges();
+
+        return {
+            currentLevel: this.determineCurrentLevel(userProgress, learningHistory),
+            nextMilestone: this.predictNextMilestone(userProgress, intent),
+            learningStyle: this.context.learningStyle,
+            challengeAreas: this.identifyChallengeAreas(currentChallenges),
+            recommendedPath: this.generateLearningPath(userProgress, intent)
+        };
+    }
+
+    async getUserProgress() {
+        try {
+            const response = await fetch('/api/user/progress', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('獲取用戶進度失敗:', error);
+            return {
+                completedTopics: [],
+                currentTopic: null,
+                overallProgress: 0
+            };
+        }
+    }
+
+    async getLearningHistory() {
+        try {
+            const response = await fetch('/api/user/learning-history', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('獲取學習歷史失敗:', error);
+            return {
+                activities: [],
+                completedExercises: [],
+                assessments: []
+            };
+        }
+    }
+
+    async getCurrentChallenges() {
+        return this.context.challenges;
+    }
+
+    determineCurrentLevel(progress, history) {
+        const completedTopics = progress.completedTopics.length;
+        const exerciseSuccess = this.calculateExerciseSuccessRate(history.completedExercises);
+        
+        if (completedTopics >= 5 && exerciseSuccess > 0.8) {
+            return 'advanced';
+        } else if (completedTopics >= 2 && exerciseSuccess > 0.6) {
+            return 'intermediate';
+        }
+        return 'beginner';
+    }
+
+    calculateExerciseSuccessRate(exercises) {
+        if (!exercises.length) return 0;
+        const successful = exercises.filter(ex => ex.status === 'completed');
+        return successful.length / exercises.length;
+    }
+
+    predictNextMilestone(progress, intent) {
+        const currentLevel = this.determineCurrentLevel(progress);
+        const learningPath = this.generateLearningPath(progress, intent);
+        
+        return learningPath[0] || {
+            title: '完成當前主題',
+            estimatedTime: '2週',
+            difficulty: 'appropriate'
+        };
+    }
+
+    generateLearningPath(progress, intent) {
+        const basePath = this.getBaseLearningPath(progress.currentTopic);
+        return this.customizePath(basePath, {
+            level: this.context.currentSkillLevel,
+            interests: this.context.interests,
+            learningStyle: this.context.learningStyle
+        });
+    }
+
+    getBaseLearningPath(currentTopic) {
+        const paths = {
+            'AI基礎': ['機器學習基礎', '深度學習入門', 'AI應用實踐'],
+            '機器學習': ['監督學習', '非監督學習', '強化學習'],
+            '深度學習': ['神經網路基礎', 'CNN架構', 'RNN應用'],
+            'NLP': ['文本處理', '詞向量模型', '序列模型'],
+            '電腦視覺': ['圖像處理', '目標檢測', '影像分割']
+        };
+        return paths[currentTopic] || paths['AI基礎'];
+    }
+
+    customizePath(basePath, userPreferences) {
+        return basePath.map(topic => ({
+            title: topic,
+            format: this.determineFormat(userPreferences.learningStyle),
+            difficulty: this.adjustDifficulty(topic, userPreferences.level),
+            resources: this.getCustomizedResources(topic, userPreferences)
+        }));
+    }
+
+    determineFormat(learningStyle) {
+        const formats = {
+            'visual': '視頻教程',
+            'practical': '實戰練習',
+            'theoretical': '理論講解',
+            'interactive': '互動練習'
+        };
+        return formats[learningStyle] || '混合學習';
+    }
+
+    adjustDifficulty(topic, userLevel) {
+        const difficultyMap = {
+            'beginner': '基礎',
+            'intermediate': '進階',
+            'advanced': '專家'
+        };
+        return difficultyMap[userLevel] || '基礎';
+    }
+
+    getCustomizedResources(topic, preferences) {
+        return [
+            {
+                type: this.determineFormat(preferences.learningStyle),
+                title: `${topic}${preferences.level === 'beginner' ? '入門' : '進階'}課程`,
+                duration: '2小時'
+            },
+            {
+                type: 'practice',
+                title: `${topic}實戰練習`,
+                difficulty: this.adjustDifficulty(topic, preferences.level)
+            }
+        ];
+    }
+
+    identifyChallengeAreas(challenges) {
+        return challenges.reduce((areas, challenge) => {
+            if (!areas[challenge.topic]) {
+                areas[challenge.topic] = {
+                    count: 0,
+                    difficulties: []
+                };
+            }
+            areas[challenge.topic].count++;
+            areas[challenge.topic].difficulties.push(challenge.type);
+            return areas;
+        }, {});
     }
 }
 
