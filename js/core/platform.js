@@ -148,6 +148,7 @@ class LearningPlatform {
             '/ai-learning-platform/js/core/learning-analytics.js',
             '/ai-learning-platform/js/core/ai-service.js',
             '/ai-learning-platform/js/core/practice-manager.js',
+            '/ai-learning-platform/js/core/achievement-service.js',
             '/ai-learning-platform/js/features/assessment.js',
             '/ai-learning-platform/js/features/practice-exercises.js',
             '/ai-learning-platform/js/features/cognitive-map.js',
@@ -200,7 +201,7 @@ class LearningPlatform {
             sessionStorage.removeItem('redirectCount');
         } else if (redirectCount < 3) { // 防止無限重定向
             sessionStorage.setItem('redirectCount', (redirectCount + 1).toString());
-            window.location.href = '/ai-learning/assessment.html';
+            window.location.href = '/ai-learning-platform/assessment.html';
         } else {
             console.error('重定向次數過多，可能存在配置問題');
             throw new Error('無法載入用戶數據');
@@ -296,7 +297,7 @@ class LearningPlatform {
             return {
                 message: '無法載入或更新用戶資料',
                 action: `
-                    <button onclick="window.location.href='/ai-learning/assessment.html'" class="btn-primary">重新開始</button>
+                    <button onclick="window.location.href='/ai-learning-platform/assessment.html'" class="btn-primary">重新開始</button>
                     <p class="error-help">或者您可以：</p>
                     <ul>
                         <li>清除瀏覽器快取</li>
