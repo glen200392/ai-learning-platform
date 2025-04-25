@@ -1,10 +1,16 @@
 class LearningPlatform {
     constructor() {
+        // 初始化平台基本服務
         this.currentSection = 'dashboard';
         this.userData = null;
         this.analytics = null;
         this.aiService = null;
         this.practiceManager = null;
+        this.achievementService = null;
+        this.codeReviewService = null;
+
+        // 代碼審查相關狀態
+        this.currentReview = null;
 
         // 課程數據
         this.courseData = {
@@ -109,14 +115,14 @@ class LearningPlatform {
     async checkResources() {
         const TIMEOUT = 10000; // 10秒超時
         const resources = [
-            '/ai-learning-platform/css/style.css',
-            '/ai-learning-platform/css/practice-exercises.css',
-            '/ai-learning-platform/js/core/platform.js',
-            '/ai-learning-platform/js/core/learning-analytics.js',
-            '/ai-learning-platform/js/core/ai-service.js',
-            '/ai-learning-platform/js/core/practice-manager.js',
-            '/ai-learning-platform/js/features/assessment.js',
-            '/ai-learning-platform/js/features/practice-exercises.js'
+            '/ai-learning/css/style.css',
+            '/ai-learning/css/practice-exercises.css',
+            '/ai-learning/js/core/platform.js',
+            '/ai-learning/js/core/learning-analytics.js',
+            '/ai-learning/js/core/ai-service.js',
+            '/ai-learning/js/core/practice-manager.js',
+            '/ai-learning/js/features/assessment.js',
+            '/ai-learning/js/features/practice-exercises.js'
         ];
 
         const loadWithTimeout = async (resource) => {
@@ -165,7 +171,7 @@ class LearningPlatform {
             sessionStorage.removeItem('redirectCount');
         } else if (redirectCount < 3) { // 防止無限重定向
             sessionStorage.setItem('redirectCount', (redirectCount + 1).toString());
-            window.location.href = '/ai-learning-platform/assessment.html';
+            window.location.href = '/ai-learning/assessment.html';
         } else {
             console.error('重定向次數過多，可能存在配置問題');
             throw new Error('無法載入用戶數據');
@@ -181,6 +187,13 @@ class LearningPlatform {
 
         // 初始化練習管理器
         this.practiceManager = new PracticeManager(this);
+
+        // 初始化成就系統
+        this.achievementService = new AchievementService(this);
+        this.achievementService.initialize();
+
+        // 初始化代碼審查服務
+        this.codeReviewService = new CodeReviewService(this);
     }
 
     updateUserProfile() {
@@ -251,7 +264,7 @@ class LearningPlatform {
             return {
                 message: '無法載入或更新用戶資料',
                 action: `
-                    <button onclick="window.location.href='/ai-learning-platform/assessment.html'" class="btn-primary">重新開始</button>
+                    <button onclick="window.location.href='/ai-learning/assessment.html'" class="btn-primary">重新開始</button>
                     <p class="error-help">或者您可以：</p>
                     <ul>
                         <li>清除瀏覽器快取</li>
@@ -351,6 +364,304 @@ class LearningPlatform {
         } finally {
             if (loadingIndicator) loadingIndicator.style.display = 'none';
         }
+    }
+    
+    generateReviewUI(review) {
+            return `
+                <div class="code-review-panel">
+                    <div class="review-header">
+                        <div class="score-card">
+                            <h2 class="score-value" style="color: ${this.getScoreColor(review.score)}">${review.score}</h2>
+                            <div class="score-rating rating-${review.report.summary.overallQuality}">
+                                ${this.formatQualityRating(review.report.summary.overallQuality)}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        <div class="review-section">
+                            <h3 class="section-title">主要發現</h3>
+                            <div class="issues-list">
+                                ${this.generateIssuesList(review.report.details)}
+                            </div>
+                        </div>
+                        <div class="review-section">
+                            <h3 class="section-title">改進建議</h3>
+                            <div class="suggestions-list">
+                                ${this.generateSuggestionsList(review.suggestions)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    
+    generateIssuesList(details) {
+            let html = '';
+            for (const [category, issues] of Object.entries(details)) {
+                if (issues.length > 0) {
+                    html += issues.map(issue => `
+                        <div class="issue-card ${issue.severity}">
+                            <div class="issue-header">
+                                <h4 class="issue-title">${issue.title}</h4>
+                                <span class="issue-severity severity-${issue.severity}">
+                                    ${this.formatSeverity(issue.severity)}
+                                </span>
+                            </div>
+                            <p class="issue-description">${issue.description}</p>
+                            ${issue.solution ? `
+                                <div class="issue-solution">
+                                    <div class="solution-title">建議解決方案：</div>
+                                    <p>${issue.solution}</p>
+                                    ${issue.example ? `
+                                        <pre class="code-example">${issue.example}</pre>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('');
+                }
+            }
+            return html;
+        }
+    
+    generateSuggestionsList(suggestions) {
+            return suggestions.map(suggestion => `
+                <div class="suggestion-item">
+                    <div class="suggestion-icon" style="background: ${this.getSuggestionColor(suggestion.type)}">
+                        ${this.getSuggestionIcon(suggestion.type)}
+                    </div>
+                    <div class="suggestion-info">
+                        <h4 class="suggestion-title">${suggestion.title}</h4>
+                        <p class="suggestion-description">${suggestion.description}</p>
+                    </div>
+                    <div class="suggestion-metrics">
+                        <div class="metric">
+                            <span class="metric-label">難度</span>
+                            <span class="metric-badge" style="background: ${this.getDifficultyColor(suggestion.difficulty)}">
+                                ${this.formatDifficulty(suggestion.difficulty)}
+                            </span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">預估時間</span>
+                            <span class="metric-badge">${suggestion.timeEstimate}分鐘</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    
+    getScoreColor(score) {
+            if (score >= 90) return '#4CAF50';
+            if (score >= 80) return '#8BC34A';
+            if (score >= 70) return '#FFC107';
+            if (score >= 60) return '#FF9800';
+            return '#F44336';
+        }
+    
+    formatQualityRating(quality) {
+            const ratings = {
+                excellent: '優秀',
+                good: '良好',
+                fair: '尚可',
+                needs_improvement: '需要改進',
+                poor: '待加強'
+            };
+            return ratings[quality] || quality;
+        }
+    
+    formatSeverity(severity) {
+            const severities = {
+                critical: '嚴重',
+                major: '主要',
+                minor: '次要'
+            };
+            return severities[severity] || severity;
+        }
+    
+    getSuggestionColor(type) {
+            const colors = {
+                quality: '#4CAF50',
+                practice: '#2196F3',
+                documentation: '#FF9800',
+                testing: '#9C27B0'
+            };
+            return colors[type] || '#757575';
+        }
+    
+    getSuggestionIcon(type) {
+            const icons = {
+                quality: '⚡',
+                practice: '🎯',
+                documentation: '📝',
+                testing: '🔍'
+            };
+            return icons[type] || '💡';
+        }
+    
+    getDifficultyColor(difficulty) {
+            const colors = {
+                1: '#4CAF50',
+                2: '#8BC34A',
+                3: '#FFC107',
+                4: '#FF9800',
+                5: '#F44336'
+            };
+            return colors[difficulty] || '#757575';
+        }
+    
+    // 代碼審查相關方法
+    generateReviewUI(review) {
+        return `
+            <div class="code-review-panel">
+                <div class="review-header">
+                    <div class="score-card">
+                        <h2 class="score-value" style="color: ${this.getScoreColor(review.score)}">${review.score}</h2>
+                        <div class="score-rating rating-${review.report.summary.overallQuality}">
+                            ${this.formatQualityRating(review.report.summary.overallQuality)}
+                        </div>
+                    </div>
+                </div>
+                <div class="review-content">
+                    <div class="review-section">
+                        <h3 class="section-title">主要發現</h3>
+                        <div class="issues-list">
+                            ${this.generateIssuesList(review.report.details)}
+                        </div>
+                    </div>
+                    <div class="review-section">
+                        <h3 class="section-title">改進建議</h3>
+                        <div class="suggestions-list">
+                            ${this.generateSuggestionsList(review.suggestions)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    generateIssuesList(details) {
+        let html = '';
+        for (const [category, issues] of Object.entries(details)) {
+            if (issues.length > 0) {
+                html += issues.map(issue => `
+                    <div class="issue-card ${issue.severity}">
+                        <div class="issue-header">
+                            <h4 class="issue-title">${issue.title}</h4>
+                            <span class="issue-severity severity-${issue.severity}">
+                                ${this.formatSeverity(issue.severity)}
+                            </span>
+                        </div>
+                        <p class="issue-description">${issue.description}</p>
+                        ${issue.solution ? `
+                            <div class="issue-solution">
+                                <div class="solution-title">建議解決方案：</div>
+                                <p>${issue.solution}</p>
+                                ${issue.example ? `
+                                    <pre class="code-example">${issue.example}</pre>
+                                ` : ''}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+            }
+        }
+        return html;
+    }
+
+    generateSuggestionsList(suggestions) {
+        return suggestions.map(suggestion => `
+            <div class="suggestion-item">
+                <div class="suggestion-icon" style="background: ${this.getSuggestionColor(suggestion.type)}">
+                    ${this.getSuggestionIcon(suggestion.type)}
+                </div>
+                <div class="suggestion-info">
+                    <h4 class="suggestion-title">${suggestion.title}</h4>
+                    <p class="suggestion-description">${suggestion.description}</p>
+                </div>
+                <div class="suggestion-metrics">
+                    <div class="metric">
+                        <span class="metric-label">難度</span>
+                        <span class="metric-badge" style="background: ${this.getDifficultyColor(suggestion.difficulty)}">
+                            ${this.formatDifficulty(suggestion.difficulty)}
+                        </span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">預估時間</span>
+                        <span class="metric-badge">${suggestion.timeEstimate}分鐘</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    getScoreColor(score) {
+        if (score >= 90) return '#4CAF50';
+        if (score >= 80) return '#8BC34A';
+        if (score >= 70) return '#FFC107';
+        if (score >= 60) return '#FF9800';
+        return '#F44336';
+    }
+
+    formatQualityRating(quality) {
+        const ratings = {
+            excellent: '優秀',
+            good: '良好',
+            fair: '尚可',
+            needs_improvement: '需要改進',
+            poor: '待加強'
+        };
+        return ratings[quality] || quality;
+    }
+
+    formatSeverity(severity) {
+        const severities = {
+            critical: '嚴重',
+            major: '主要',
+            minor: '次要'
+        };
+        return severities[severity] || severity;
+    }
+
+    getSuggestionColor(type) {
+        const colors = {
+            quality: '#4CAF50',
+            practice: '#2196F3',
+            documentation: '#FF9800',
+            testing: '#9C27B0'
+        };
+        return colors[type] || '#757575';
+    }
+
+    getSuggestionIcon(type) {
+        const icons = {
+            quality: '⚡',
+            practice: '🎯',
+            documentation: '📝',
+            testing: '🔍'
+        };
+        return icons[type] || '💡';
+    }
+
+    getDifficultyColor(difficulty) {
+        const colors = {
+            1: '#4CAF50',
+            2: '#8BC34A',
+            3: '#FFC107',
+            4: '#FF9800',
+            5: '#F44336'
+        };
+        return colors[difficulty] || '#757575';
+    }
+
+    formatDifficulty(difficulty) {
+        const levels = {
+            1: '簡單',
+            2: '較簡單',
+            3: '中等',
+            4: '較難',
+            5: '困難'
+        };
+        return levels[difficulty] || difficulty;
     }
 
     async loadDashboard() {
@@ -683,9 +994,14 @@ class LearningPlatform {
         // 初始化練習管理器
         await this.practiceManager.initialize();
 
-        // 載入用戶進度
+        // 載入用戶進度和成就
         if (this.userData) {
             const progress = await this.practiceManager.practiceExercises.getProgress(this.userData.id);
+            
+            // 檢查新的成就
+            if (this.achievementService) {
+                this.achievementService.checkNewAchievements();
+            }
             
             // 更新進度顯示
             const completedCount = progress.completed.length;

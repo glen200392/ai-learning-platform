@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI學習平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/ai-learning-platform/css/style.css">
-    <link rel="stylesheet" href="/ai-learning-platform/css/practice-exercises.css">
+    <link rel="stylesheet" href="/ai-learning/css/style.css">
+    <link rel="stylesheet" href="/ai-learning/css/practice-exercises.css">
+    <link rel="stylesheet" href="/ai-learning/css/achievements.css">
 </head>
 <body>
     <div id="loading" class="loading">
@@ -119,25 +120,35 @@
 
         <div id="practice-screen" class="screen">
             <h2>AI實戰練習</h2>
-            <div class="practice-stats">
-                <!-- Practice statistics will be shown here -->
-            </div>
             <div class="practice-container">
-                <!-- Practice exercises will be loaded here -->
-            </div>
-            <div class="exercise-details">
-                <!-- Exercise details will be shown here -->
+                <div class="practice-main">
+                    <div class="practice-stats">
+                        <!-- Practice statistics will be shown here -->
+                    </div>
+                    <div class="practice-content">
+                        <!-- Practice exercises will be loaded here -->
+                    </div>
+                    <div class="exercise-details">
+                        <!-- Exercise details will be shown here -->
+                    </div>
+                </div>
+                <aside class="achievements-sidebar">
+                    <div id="achievements-container">
+                        <!-- Achievements will be loaded here -->
+                    </div>
+                </aside>
             </div>
         </div>
     </div>
     <!-- Core Services -->
-    <script src="/ai-learning-platform/js/core/platform.js"></script>
-    <script src="/ai-learning-platform/js/core/learning-analytics.js"></script>
-    <script src="/ai-learning-platform/js/core/ai-service.js"></script>
-    <script src="/ai-learning-platform/js/core/practice-manager.js"></script>
+    <script src="/ai-learning/js/core/platform.js"></script>
+    <script src="/ai-learning/js/core/learning-analytics.js"></script>
+    <script src="/ai-learning/js/core/ai-service.js"></script>
+    <script src="/ai-learning/js/core/practice-manager.js"></script>
+    <script src="/ai-learning/js/core/achievement-service.js"></script>
     
     <!-- Features -->
-    <script src="/ai-learning-platform/js/features/assessment.js"></script>
-    <script src="/ai-learning-platform/js/features/practice-exercises.js"></script>
+    <script src="/ai-learning/js/features/assessment.js"></script>
+    <script src="/ai-learning/js/features/practice-exercises.js"></script>
 </body>
 </html>

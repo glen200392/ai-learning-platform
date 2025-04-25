@@ -78,7 +78,11 @@ class AssessmentModule {
         // Character Creation
         document.querySelectorAll('.avatar').forEach(avatar => {
             avatar.addEventListener('click', (e) => {
-                this.selectAvatar(e.target);
+                // 確保我們總是使用最近的avatar元素
+                const avatarElement = e.target.closest('.avatar');
+                if (avatarElement) {
+                    this.selectAvatar(avatarElement);
+                }
             });
         });
 
@@ -315,7 +319,7 @@ class AssessmentModule {
     startLearning() {
         localStorage.setItem('userData', JSON.stringify(this.userData));
         // 更新路徑到整合後的主平台
-        window.location.href = '/';
+        window.location.href = '/ai-learning/';
     }
 }
 
