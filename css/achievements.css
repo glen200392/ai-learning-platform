@@ -1,0 +1,168 @@
+/* 成就容器 */
+.achievements-sidebar {
+    width: 300px;
+    background: #fff;
+    border-left: 1px solid #e9ecef;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.achievements-sidebar h3 {
+    margin: 0 0 20px 0;
+    color: #343a40;
+    font-size: 18px;
+}
+
+.achievement-category {
+    margin-bottom: 30px;
+}
+
+.achievement-category h4 {
+    color: #495057;
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* 成就項目 */
+.achievements-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.achievement-item.locked {
+    opacity: 0.6;
+    filter: grayscale(1);
+}
+
+.achievement-item.unlocked {
+    background: #e3f2fd;
+    border: 1px solid #bbdefb;
+}
+
+.achievement-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.achievement-icon i {
+    font-size: 18px;
+    color: #1976d2;
+}
+
+.achievement-details {
+    flex: 1;
+}
+
+.achievement-details h5 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: #343a40;
+}
+
+.achievement-details p {
+    margin: 0;
+    font-size: 12px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+/* 成就通知 */
+.achievement-notification {
+    position: fixed;
+    bottom: -100px;
+    right: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    max-width: 300px;
+}
+
+.achievement-notification.show {
+    transform: translateY(-120px);
+}
+
+.achievement-notification i {
+    font-size: 24px;
+    color: #1976d2;
+}
+
+.achievement-notification .achievement-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    color: #343a40;
+}
+
+.achievement-notification .achievement-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* 成就統計 */
+.achievements-stats {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1976d2;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .achievements-sidebar {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .achievement-notification {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+}
