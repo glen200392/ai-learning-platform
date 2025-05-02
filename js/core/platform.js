@@ -193,17 +193,17 @@ class LearningPlatform {
     async checkResources() {
         const TIMEOUT = 10000; // 10秒超時
         const resources = [
-            './ai-learning/css/style.css',
-            './ai-learning/css/practice-exercises.css',
-            './ai-learning/js/core/platform.js',
-            './ai-learning/js/core/learning-analytics.js',
-            './ai-learning/js/core/ai-service.js',
-            './ai-learning/js/core/practice-manager.js',
-            './ai-learning/js/core/achievement-service.js',
-            './ai-learning/js/features/assessment.js',
-            './ai-learning/js/features/practice-exercises.js',
-            './ai-learning/js/features/cognitive-map.js',
-            './ai-learning/css/cognitive-map.css'
+            'css/style.css',
+            'css/practice-exercises.css',
+            'js/core/platform.js',
+            'js/core/learning-analytics.js',
+            'js/core/ai-service.js',
+            'js/core/practice-manager.js',
+            'js/core/achievement-service.js',
+            'js/features/assessment.js',
+            'js/features/practice-exercises.js',
+            'js/features/cognitive-map.js',
+            'css/cognitive-map.css'
         ];
 
         const loadWithTimeout = async (resource) => {
@@ -252,7 +252,7 @@ class LearningPlatform {
             sessionStorage.removeItem('redirectCount');
         } else if (redirectCount < 3) { // 防止無限重定向
             sessionStorage.setItem('redirectCount', (redirectCount + 1).toString());
-            window.location.href = './ai-learning/assessment.html';
+            window.location.href = 'assessment.html';
         } else {
             console.error('重定向次數過多，可能存在配置問題');
             throw new Error('無法載入用戶數據');
