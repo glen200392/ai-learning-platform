@@ -273,10 +273,28 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
+.btn-primary i,
+.btn-secondary i {
+    font-size: 1.1rem;
+    margin-right: 0.5rem;
+    position: relative;
+    top: 1px;
+}
+
 .btn-primary:hover {
     background: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 圖標動畫效果 */
+.btn-primary:hover i {
+    transform: translateX(2px);
+    transition: transform 0.3s ease;
+}
+
+.btn-primary:hover i.fa-arrow-left {
+    transform: translateX(-2px);
 }
 
 .btn-primary:active {
