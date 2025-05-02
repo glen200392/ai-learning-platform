@@ -105,39 +105,36 @@ class LearningPlatform {
         };
     }
 
-    async init(retryCount = 0) {
+    async init() {
         const loading = document.getElementById('loading');
-        const MAX_RETRIES = 3;
         try {
             loading.style.display = 'flex';
+            loading.querySelector('.loading-text').textContent = '正在初始化系統...';
             
-            // 追蹤初始化進度
-            const progress = {
-                resources: false,
-                userData: false,
-                services: false,
-                dashboard: false,
-                cognitiveMap: false
-            };
+            // 基本服務初始化
+            this.analytics = new LearningAnalytics(this.userData);
+            
+            // 載入用戶數據
+            try {
+                await this.loadUserData();
+            } catch (error) {
+                console.warn('用戶數據載入失敗，使用訪客模式');
+                // 使用訪客模式繼續
+            }
 
-            // 更新載入狀態
-            const updateLoadingStatus = (step) => {
-                progress[step] = true;
-                const completedSteps = Object.values(progress).filter(v => v).length;
-                const totalSteps = Object.keys(progress).length;
-                loading.querySelector('.loading-text').textContent =
-                    `載入中... ${Math.round((completedSteps / totalSteps) * 100)}%`;
-            };
+            // 初始化其他服務
+            this.initializeServices();
+            this.initializeEventListeners();
+            
+            // 載入儀表板
+            try {
+                await this.loadDashboard();
+            } catch (error) {
+                console.warn('儀表板載入失敗，顯示基本介面');
+                // 顯示基本介面
+            }
 
-            // 檢查並載入資源
-            await this.checkResources();
-            updateLoadingStatus('resources');
-
-            // 確保用戶數據載入
-            await this.loadUserData();
-            updateLoadingStatus('userData');
-
-            // 按順序初始化服務
+            loading.style.display = 'none';
             await this.initializeServicesInOrder();
             updateLoadingStatus('services');
 
@@ -154,86 +151,32 @@ class LearningPlatform {
 
             loading.style.display = 'none';
         } catch (error) {
-            console.error('平台初始化失敗:', error);
+            console.warn('系統初始化時發生問題:', error);
             
-            // 如果還有重試機會，則重試
-            if (retryCount < MAX_RETRIES) {
-                console.log(`正在重試初始化 (${retryCount + 1}/${MAX_RETRIES})...`);
-                loading.querySelector('.loading-text').textContent =
-                    `初始化失敗，正在重試 (${retryCount + 1}/${MAX_RETRIES})...`;
-                
-                // 等待短暫時間後重試
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                return this.init(retryCount + 1);
-            }
-            
-            // 如果已超過重試次數，顯示錯誤訊息
-            const errorMessage = this.getErrorMessage(error);
+            // 顯示友好的錯誤信息
             loading.innerHTML = `
                 <div class="error-message">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <h3>載入失敗</h3>
-                    <p>${errorMessage.message}</p>
+                    <i class="fas fa-info-circle"></i>
+                    <h3>系統提示</h3>
+                    <p>正在載入基本功能，部分進階功能可能暫時無法使用</p>
                     <div class="error-actions">
-                        ${errorMessage.action}
+                        <button onclick="window.location.reload()" class="btn-primary">
+                            <i class="fas fa-sync"></i>
+                            重新載入
+                        </button>
                     </div>
                 </div>
             `;
             
-            // 在主控台記錄詳細錯誤信息
-            console.error('初始化重試次數已達上限，系統無法正常啟動', {
-                error,
-                retryCount,
-                failedAt: new Date().toISOString(),
-                userAgent: navigator.userAgent
-            });
+            // 嘗試載入基本功能
+            this.initializeBasicServices();
         }
     }
 
     async checkResources() {
-        const TIMEOUT = 10000; // 10秒超時
-        const resources = [
-            'css/style.css',
-            'css/practice-exercises.css',
-            'js/core/platform.js',
-            'js/core/learning-analytics.js',
-            'js/core/ai-service.js',
-            'js/core/practice-manager.js',
-            'js/core/achievement-service.js',
-            'js/features/assessment.js',
-            'js/features/practice-exercises.js',
-            'js/features/cognitive-map.js',
-            'css/cognitive-map.css'
-        ];
-
-        const loadWithTimeout = async (resource) => {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
-
-            try {
-                const response = await fetch(resource, {
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return true;
-            } catch (error) {
-                if (error.name === 'AbortError') {
-                    throw new Error(`載入超時: ${resource}`);
-                }
-                throw error;
-            }
-        };
-
-        try {
-            await Promise.all(resources.map(loadWithTimeout));
-        } catch (error) {
-            console.error('資源載入失敗:', error);
-            throw new Error(`資源載入失敗: ${error.message}`);
-        }
+        // 在初始化時不需要主動檢查靜態資源
+        // 瀏覽器會自動處理CSS和JS的載入
+        return true;
     }
 
     async loadUserData() {
@@ -340,6 +283,67 @@ class LearningPlatform {
             '4': '#ED8936'
         };
         return colors[avatarId] || '#4A90E2';
+    }
+
+    initializeBasicServices() {
+        try {
+            // 初始化基本UI
+            this.initializeBasicUI();
+            
+            // 初始化基本事件監聽
+            this.initializeBasicEventListeners();
+            
+            // 載入訪客模式
+            this.initializeGuestMode();
+            
+            console.log('基本功能已成功載入');
+        } catch (error) {
+            console.warn('基本功能初始化失敗:', error);
+        }
+    }
+    
+    initializeBasicUI() {
+        // 設置基本UI元素
+        const container = document.querySelector('.app-container');
+        if (container) {
+            container.innerHTML = `
+                <div class="basic-mode-banner">
+                    <i class="fas fa-info-circle"></i>
+                    <span>基本模式運行中</span>
+                </div>
+                <div class="welcome-header">
+                    <h1>歡迎使用AI學習平台</h1>
+                    <p>目前處於基本功能模式</p>
+                </div>
+                <div class="basic-features">
+                    <button class="btn-primary" onclick="window.location.reload()">
+                        <i class="fas fa-sync"></i>
+                        重新載入完整功能
+                    </button>
+                </div>
+            `;
+        }
+    }
+    
+    initializeBasicEventListeners() {
+        // 添加基本的事件監聽器
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-primary')) {
+                const button = e.target.closest('.btn-primary');
+                button.classList.add('clicked');
+                setTimeout(() => button.classList.remove('clicked'), 200);
+            }
+        });
+    }
+    
+    initializeGuestMode() {
+        // 設置訪客模式的基本數據
+        this.userData = {
+            isGuest: true,
+            nickname: '訪客用戶',
+            avatar: 'default',
+            activities: []
+        };
     }
 
     getErrorMessage(error) {

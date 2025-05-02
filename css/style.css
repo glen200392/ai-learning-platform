@@ -273,6 +273,41 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 
+/* 基本模式樣式 */
+.basic-mode-banner {
+    background: var(--primary-light);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-radius: 6px;
+}
+
+.basic-mode-banner i {
+    font-size: 1.2rem;
+}
+
+.basic-features {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clicked {
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+}
+
 .btn-primary i,
 .btn-secondary i {
     font-size: 1.1rem;
