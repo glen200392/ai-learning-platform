@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI學習平台</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/ai-learning-platform/css/style.css">
-    <link rel="stylesheet" href="/ai-learning-platform/css/practice-exercises.css">
-    <link rel="stylesheet" href="/ai-learning-platform/css/achievements.css">
-    <link rel="stylesheet" href="/ai-learning-platform/css/cognitive-map.css">
+    <link rel="stylesheet" href="/ai-learning/css/style.css">
+    <link rel="stylesheet" href="/ai-learning/css/practice-exercises.css">
+    <link rel="stylesheet" href="/ai-learning/css/achievements.css">
+    <link rel="stylesheet" href="/ai-learning/css/cognitive-map.css">
 </head>
 <body>
     <div id="loading" class="loading">
@@ -23,9 +23,33 @@
             </div>
         </header>
         <div id="welcome-screen" class="screen active">
-            <h1>歡迎來到AI學習之旅</h1>
-            <p>讓我們通過有趣的方式了解您的學習需求</p>
-            <button id="start-assessment" class="btn-primary">開始評估</button>
+            <div class="welcome-header">
+                <img src="assets/welcome-banner.jpg" alt="歡迎橫幅" class="welcome-banner">
+                <h1>歡迎來到AI學習之旅</h1>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <img src="assets/feature1.png" alt="個人化學習" class="feature-icon">
+                    <h3>個人化學習路徑</h3>
+                    <p>根據您的興趣和程度，打造專屬學習計畫</p>
+                </div>
+                <div class="feature-card">
+                    <img src="assets/feature2.png" alt="實戰練習" class="feature-icon">
+                    <h3>實戰導向學習</h3>
+                    <p>通過真實案例，體驗AI應用開發</p>
+                </div>
+                <div class="feature-card">
+                    <img src="assets/feature3.png" alt="即時分析" class="feature-icon">
+                    <h3>學習成效分析</h3>
+                    <p>即時追蹤學習進度，優化學習方向</p>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <p class="cta-text">讓我們通過有趣的方式了解您的學習需求</p>
+                <button id="start-assessment" class="btn-primary">開始評估</button>
+            </div>
         </div>
 
         <div id="character-creation" class="screen">
@@ -142,16 +166,16 @@
         </div>
     </div>
     <!-- Core Services -->
-    <script src="/ai-learning-platform/js/core/platform.js"></script>
-    <script src="/ai-learning-platform/js/core/learning-analytics.js"></script>
-    <script src="/ai-learning-platform/js/core/ai-service.js"></script>
-    <script src="/ai-learning-platform/js/core/practice-manager.js"></script>
-    <script src="/ai-learning-platform/js/core/achievement-service.js"></script>
+    <script src="/ai-learning/js/core/platform.js"></script>
+    <script src="/ai-learning/js/core/learning-analytics.js"></script>
+    <script src="/ai-learning/js/core/ai-service.js"></script>
+    <script src="/ai-learning/js/core/practice-manager.js"></script>
+    <script src="/ai-learning/js/core/achievement-service.js"></script>
     
     <!-- Features -->
-    <script src="/ai-learning-platform/js/features/assessment.js"></script>
-    <script src="/ai-learning-platform/js/features/practice-exercises.js"></script>
-    <script src="/ai-learning-platform/js/features/cognitive-map.js"></script>
+    <script src="/ai-learning/js/features/assessment.js"></script>
+    <script src="/ai-learning/js/features/practice-exercises.js"></script>
+    <script src="/ai-learning/js/features/cognitive-map.js"></script>
 
     <div id="cognitive-map-container" class="cognitive-map-container">
         <!-- 認知地圖將在這裡渲染 -->

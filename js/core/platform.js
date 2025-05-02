@@ -105,26 +105,69 @@ class LearningPlatform {
         };
     }
 
-    async init() {
+    async init(retryCount = 0) {
         const loading = document.getElementById('loading');
+        const MAX_RETRIES = 3;
         try {
-            // 顯示載入指示器
             loading.style.display = 'flex';
             
+            // 追蹤初始化進度
+            const progress = {
+                resources: false,
+                userData: false,
+                services: false,
+                dashboard: false,
+                cognitiveMap: false
+            };
+
+            // 更新載入狀態
+            const updateLoadingStatus = (step) => {
+                progress[step] = true;
+                const completedSteps = Object.values(progress).filter(v => v).length;
+                const totalSteps = Object.keys(progress).length;
+                loading.querySelector('.loading-text').textContent =
+                    `載入中... ${Math.round((completedSteps / totalSteps) * 100)}%`;
+            };
+
             // 檢查並載入資源
             await this.checkResources();
+            updateLoadingStatus('resources');
+
+            // 確保用戶數據載入
             await this.loadUserData();
-            this.initializeServices();
+            updateLoadingStatus('userData');
+
+            // 按順序初始化服務
+            await this.initializeServicesInOrder();
+            updateLoadingStatus('services');
+
+            // 初始化事件監聽器
             this.initializeEventListeners();
+
+            // 載入儀表板
             await this.loadDashboard();
+            updateLoadingStatus('dashboard');
             
             // 初始化認知地圖
-            this.initializeCognitiveMap();
+            await this.initializeCognitiveMap();
+            updateLoadingStatus('cognitiveMap');
 
-            // 隱藏載入指示器
             loading.style.display = 'none';
         } catch (error) {
             console.error('平台初始化失敗:', error);
+            
+            // 如果還有重試機會，則重試
+            if (retryCount < MAX_RETRIES) {
+                console.log(`正在重試初始化 (${retryCount + 1}/${MAX_RETRIES})...`);
+                loading.querySelector('.loading-text').textContent =
+                    `初始化失敗，正在重試 (${retryCount + 1}/${MAX_RETRIES})...`;
+                
+                // 等待短暫時間後重試
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                return this.init(retryCount + 1);
+            }
+            
+            // 如果已超過重試次數，顯示錯誤訊息
             const errorMessage = this.getErrorMessage(error);
             loading.innerHTML = `
                 <div class="error-message">
@@ -136,23 +179,31 @@ class LearningPlatform {
                     </div>
                 </div>
             `;
+            
+            // 在主控台記錄詳細錯誤信息
+            console.error('初始化重試次數已達上限，系統無法正常啟動', {
+                error,
+                retryCount,
+                failedAt: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            });
         }
     }
 
     async checkResources() {
         const TIMEOUT = 10000; // 10秒超時
         const resources = [
-            '/ai-learning-platform/css/style.css',
-            '/ai-learning-platform/css/practice-exercises.css',
-            '/ai-learning-platform/js/core/platform.js',
-            '/ai-learning-platform/js/core/learning-analytics.js',
-            '/ai-learning-platform/js/core/ai-service.js',
-            '/ai-learning-platform/js/core/practice-manager.js',
-            '/ai-learning-platform/js/core/achievement-service.js',
-            '/ai-learning-platform/js/features/assessment.js',
-            '/ai-learning-platform/js/features/practice-exercises.js',
-            '/ai-learning-platform/js/features/cognitive-map.js',
-            '/ai-learning-platform/css/cognitive-map.css'
+            '/ai-learning/css/style.css',
+            '/ai-learning/css/practice-exercises.css',
+            '/ai-learning/js/core/platform.js',
+            '/ai-learning/js/core/learning-analytics.js',
+            '/ai-learning/js/core/ai-service.js',
+            '/ai-learning/js/core/practice-manager.js',
+            '/ai-learning/js/core/achievement-service.js',
+            '/ai-learning/js/features/assessment.js',
+            '/ai-learning/js/features/practice-exercises.js',
+            '/ai-learning/js/features/cognitive-map.js',
+            '/ai-learning/css/cognitive-map.css'
         ];
 
         const loadWithTimeout = async (resource) => {
@@ -187,7 +238,7 @@ class LearningPlatform {
 
     async loadUserData() {
         // 檢查是否已在評估頁面
-        if (window.location.pathname.includes('/assessment')) {
+        if (window.location.pathname.includes('assessment.html')) {
             return;
         }
 
@@ -201,32 +252,64 @@ class LearningPlatform {
             sessionStorage.removeItem('redirectCount');
         } else if (redirectCount < 3) { // 防止無限重定向
             sessionStorage.setItem('redirectCount', (redirectCount + 1).toString());
-            window.location.href = '/ai-learning-platform/assessment.html';
+            window.location.href = '/ai-learning/assessment.html';
         } else {
             console.error('重定向次數過多，可能存在配置問題');
             throw new Error('無法載入用戶數據');
         }
     }
 
-    initializeServices() {
-        // 初始化分析服務
-        this.analytics = new LearningAnalytics(this.userData);
-        
-        // 初始化認知地圖
-        this.cognitiveMap = new CognitiveMap(this);
-        
-        // 初始化AI助手服務
-        this.aiService = new AIService(this.userData);
+    async initializeServicesInOrder() {
+        try {
+            // 按依賴順序初始化服務
+            // 1. 首先初始化基礎分析服務
+            this.analytics = new LearningAnalytics(this.userData);
+            await this.waitForServiceReady(this.analytics, 'LearningAnalytics');
+            
+            // 2. 初始化AI助手服務（依賴分析服務）
+            this.aiService = new AIService(this.userData);
+            await this.waitForServiceReady(this.aiService, 'AIService');
+            
+            // 3. 初始化練習管理器（依賴AI助手和分析服務）
+            this.practiceManager = new PracticeManager(this);
+            await this.waitForServiceReady(this.practiceManager, 'PracticeManager');
+            
+            // 4. 初始化成就系統（依賴練習管理器）
+            this.achievementService = new AchievementService(this);
+            await this.achievementService.initialize();
+            await this.waitForServiceReady(this.achievementService, 'AchievementService');
+            
+            // 5. 初始化代碼審查服務（依賴AI助手）
+            this.codeReviewService = new CodeReviewService(this);
+            await this.waitForServiceReady(this.codeReviewService, 'CodeReviewService');
+            
+            // 6. 最後初始化認知地圖（依賴所有其他服務）
+            this.cognitiveMap = new CognitiveMap(this);
+            await this.waitForServiceReady(this.cognitiveMap, 'CognitiveMap');
+            
+        } catch (error) {
+            console.error('服務初始化失敗:', error);
+            throw new Error(`服務初始化失敗: ${error.message}`);
+        }
+    }
 
-        // 初始化練習管理器
-        this.practiceManager = new PracticeManager(this);
-
-        // 初始化成就系統
-        this.achievementService = new AchievementService(this);
-        this.achievementService.initialize();
-
-        // 初始化代碼審查服務
-        this.codeReviewService = new CodeReviewService(this);
+    async waitForServiceReady(service, serviceName, timeout = 5000) {
+        return new Promise((resolve, reject) => {
+            const start = Date.now();
+            
+            const checkService = () => {
+                // 檢查服務是否已初始化完成
+                if (service && (!service.isInitializing || service.isReady)) {
+                    resolve();
+                } else if (Date.now() - start > timeout) {
+                    reject(new Error(`${serviceName} 初始化超時`));
+                } else {
+                    setTimeout(checkService, 100);
+                }
+            };
+            
+            checkService();
+        });
     }
 
     updateUserProfile() {

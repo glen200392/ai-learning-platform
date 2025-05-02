@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>後台管理 - AI學習平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/ai-learning/css/style.css">
+    <link rel="stylesheet" href="/ai-learning/css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>管理後台</h2>
+            </div>
+            <nav class="admin-nav">
+                <a href="#" class="nav-item active" data-section="content">
+                    <i class="fas fa-edit"></i>內容管理
+                </a>
+                <a href="#" class="nav-item" data-section="courses">
+                    <i class="fas fa-book"></i>課程管理
+                </a>
+                <a href="#" class="nav-item" data-section="media">
+                    <i class="fas fa-images"></i>媒體庫
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>系統設置
+                </a>
+            </nav>
+        </aside>
+        
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="admin-search">
+                    <input type="text" placeholder="搜尋...">
+                </div>
+                <div class="admin-user">
+                    <span class="admin-username">管理員</span>
+                    <button class="btn-logout">登出</button>
+                </div>
+            </header>
+            
+            <div class="admin-content">
+                <!-- 內容管理區塊 -->
+                <section id="content-section" class="admin-section active">
+                    <h2>內容管理</h2>
+                    <div class="content-editor">
+                        <div class="editor-toolbar">
+                            <button class="tool-btn" title="上傳圖片">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="tool-btn" title="添加連結">
+                                <i class="fas fa-link"></i>
+                            </button>
+                            <button class="tool-btn" title="格式化">
+                                <i class="fas fa-paragraph"></i>
+                            </button>
+                        </div>
+                        <div class="editor-main">
+                            <div class="page-list">
+                                <h3>頁面列表</h3>
+                                <ul>
+                                    <li class="active">首頁</li>
+                                    <li>關於我們</li>
+                                    <li>課程介紹</li>
+                                    <li>學習資源</li>
+                                </ul>
+                                <button class="btn-add-page">
+                                    <i class="fas fa-plus"></i> 新增頁面
+                                </button>
+                            </div>
+                            <div class="edit-area">
+                                <div class="edit-header">
+                                    <input type="text" class="page-title" value="首頁">
+                                    <button class="btn-save">儲存更改</button>
+                                </div>
+                                <div class="edit-content" contenteditable="true">
+                                    <!-- 可編輯內容區域 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 課程管理區塊 -->
+                <section id="courses-section" class="admin-section">
+                    <h2>課程管理</h2>
+                    <div class="course-list">
+                        <div class="course-filters">
+                            <select class="filter-category">
+                                <option value="">所有類別</option>
+                                <option value="ai-basics">AI基礎</option>
+                                <option value="machine-learning">機器學習</option>
+                                <option value="deep-learning">深度學習</option>
+                            </select>
+                            <button class="btn-add-course">
+                                <i class="fas fa-plus"></i> 新增課程
+                            </button>
+                        </div>
+                        <div class="course-grid">
+                            <!-- 課程卡片將由JavaScript動態生成 -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 媒體庫區塊 -->
+                <section id="media-section" class="admin-section">
+                    <h2>媒體庫</h2>
+                    <div class="media-uploader">
+                        <div class="upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>拖放檔案到此處或點擊上傳</p>
+                            <input type="file" multiple accept="image/*">
+                        </div>
+                        <div class="media-grid">
+                            <!-- 媒體項目將由JavaScript動態生成 -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 系統設置區塊 -->
+                <section id="settings-section" class="admin-section">
+                    <h2>系統設置</h2>
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>網站標題</label>
+                            <input type="text" value="AI學習平台">
+                        </div>
+                        <div class="form-group">
+                            <label>網站描述</label>
+                            <textarea rows="3">專為想要學習和應用AI技術的使用者打造的互動式學習平台</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>主題顏色</label>
+                            <input type="color" value="#4A90E2">
+                        </div>
+                        <button class="btn-save-settings">儲存設置</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/ai-learning/js/admin/auth.js"></script>
+    <script src="/ai-learning/js/admin/admin.js"></script>
+    
+    <style>
+    .login-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .login-form {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .login-form h2 {
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .login-form .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .login-form label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-form input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+    }
+
+    .login-form button {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        margin-top: 1rem;
+        cursor: pointer;
+    }
+
+    .login-form button:hover {
+        background: var(--primary-dark);
+    }
+
+    #setup-admin {
+        background: var(--text-secondary);
+    }
+
+    #setup-admin:hover {
+        background: var(--text-color);
+    }
+    </style>
+</body>
+</html>
